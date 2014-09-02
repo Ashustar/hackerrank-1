@@ -68,7 +68,7 @@ int tmp_gcnt[MAXN][MAXN];
 bool vis[MAXN];
 int n, m;
 
-int64 get_det(int a[][MAXN], int n) {
+int64 get_det(int64 a[][MAXN], int n) {
 	// Gauss -> get det(a[1:][1:])
 	int64 ret = 1;
 	// Ignore the first row and column
@@ -76,7 +76,7 @@ int64 get_det(int a[][MAXN], int n) {
 		repf (j, i + 1, n - 1) {
 			// like gcd with eculid: mod and swap
 			while (a[j][i]) {
-				int t = a[i][i] / a[j][i];
+				int64 t = a[i][i] / a[j][i];
 				repf (k, i, n - 1) a[i][k] -= a[j][k] * t;
 				repf (k, i, n - 1) swap (a[i][k], a[j][k]);
 				ret = -ret;
@@ -85,10 +85,10 @@ int64 get_det(int a[][MAXN], int n) {
 		if (a[i][i] == 0) return 0;
 		ret *= a[i][i];
 	}
-	return ret ;
+	return abs(ret);
 }
 
-void add_edge_to_kmat(int a[][MAXN], int x, int y, int cnt = 1) {
+void add_edge_to_kmat(int64 a[][MAXN], int x, int y, int cnt = 1) {
 	a[x][x] += cnt; a[y][y] += cnt;
 	a[x][y] -= cnt; a[y][x] -= cnt;
 }
@@ -108,7 +108,7 @@ int64 get_mst_cnt_one_block() {
 
 		// calc current Kirchhoff matrix
 		int len = sz(block.second);
-		int kmat[MAXN][MAXN] = {0};
+		int64 kmat[MAXN][MAXN] = {0};
 		rep (x, len) rep (y, x) {
 			add_edge_to_kmat(kmat, x, y, tmp_gcnt[block.second[x]][block.second[y]]);
 		}
@@ -154,7 +154,7 @@ int64 get_mst_cnt() {
 
 int64 get_st_cnt() {
 	// Kirchhoff matrix
-	int kmat[MAXN][MAXN] = {0};
+	int64 kmat[MAXN][MAXN] = {0};
 	rep (i, m) {
 		add_edge_to_kmat(kmat, edges[i].u, edges[i].v);
 	}
@@ -169,7 +169,7 @@ int main() {
 		int64 mst_cnt = get_mst_cnt();
 		int64 st_cnt = get_st_cnt();
 		int64 gcd_ab = __gcd(mst_cnt, st_cnt);
-		gcd_ab = 1;
+		// gcd_ab = 1;
 		cout << mst_cnt / gcd_ab << '/' << st_cnt / gcd_ab << endl;
 	}
 	return 0;
